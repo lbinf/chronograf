@@ -1,6 +1,7 @@
 import React, {PureComponent} from 'react'
 import {Link} from 'react-router'
 import _ from 'lodash'
+import classnames from 'classnames'
 
 import OnClickOutside from 'src/shared/components/OnClickOutside'
 import FancyScrollbar from 'src/shared/components/FancyScrollbar'
@@ -9,11 +10,10 @@ import {ErrorHandling} from 'src/shared/decorators/errors'
 
 import {DROPDOWN_MENU_MAX_HEIGHT} from 'src/shared/constants/index'
 
-import {DashboardSwitcherLink} from 'src/types/dashboards'
+import DashboardLinks from 'src/dashboards/utils/DashboardLinks'
 
 interface Props {
-  links: DashboardSwitcherLink[]
-  activeLink?: DashboardSwitcherLink
+  dashboardLinks: DashboardLinks
 }
 
 interface State {
@@ -66,17 +66,14 @@ class DashboardSwitcher extends PureComponent<Props, State> {
   }
 
   private get links(): JSX.Element[] {
-    const {links, activeLink} = this.props
+    const {dashboardLinks} = this.props
 
-    return _.sortBy(links, ['text', 'key']).map(link => {
-      let activeClass = ''
-
-      if (activeLink && link.key === activeLink.key) {
-        activeClass = 'active'
-      }
-
+    return _.sortBy(dashboardLinks.toArray(), ['text', 'key']).map(link => {
       return (
-        <li key={link.key} className={`dropdown-item ${activeClass}`}>
+        <li
+          key={link.key}
+          className={classnames('dropdown-item', {active: link.isActive})}
+        >
           <Link to={link.to} onClick={this.handleCloseMenu}>
             {link.text}
           </Link>

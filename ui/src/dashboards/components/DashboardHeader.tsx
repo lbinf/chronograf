@@ -10,6 +10,7 @@ import TimeRangeDropdown from 'src/shared/components/TimeRangeDropdown'
 import GraphTips from 'src/shared/components/GraphTips'
 import DashboardHeaderEdit from 'src/dashboards/components/DashboardHeaderEdit'
 import DashboardSwitcher from 'src/dashboards/components/DashboardSwitcher'
+import DashboardLinks from 'src/dashboards/utils/DashboardLinks'
 
 import * as AppActions from 'src/types/actions/app'
 import * as DashboardsModels from 'src/types/dashboards'
@@ -32,8 +33,7 @@ interface Props {
   zoomedTimeRange: QueriesModels.TimeRange
   onCancel: () => void
   onSave: (name: string) => Promise<void>
-  dashboardLinks: DashboardsModels.DashboardSwitcherLink[]
-  activeDashboardLink?: DashboardsModels.DashboardSwitcherLink
+  dashboardLinks: DashboardLinks
   isHidden: boolean
 }
 
@@ -146,15 +146,10 @@ class DashboardHeader extends Component<Props> {
   }
 
   private get dashboardSwitcher(): JSX.Element {
-    const {dashboardLinks, activeDashboardLink} = this.props
+    const {dashboardLinks} = this.props
 
-    if (dashboardLinks.length > 1) {
-      return (
-        <DashboardSwitcher
-          links={dashboardLinks}
-          activeLink={activeDashboardLink}
-        />
-      )
+    if (dashboardLinks.count > 1) {
+      return <DashboardSwitcher dashboardLinks={dashboardLinks} />
     }
   }
 

@@ -25,6 +25,7 @@ import idNormalizer, {TYPE_ID} from 'src/normalizers/id'
 import {millisecondTimeRange} from 'src/dashboards/utils/time'
 import {stripTempVar} from 'src/dashboards/utils/tempVars'
 import {getDeep} from 'src/utils/wrappers'
+import DashboardLinks from 'src/dashboards/utils/DashboardLinks'
 
 // Constants
 import {
@@ -58,7 +59,6 @@ interface DashboardActions {
   syncURLQueryParamsFromQueryParamsObject: DashboardsActions.SyncURLQueryFromQueryParamsObjectDispatcher
   putDashboard: DashboardsActions.PutDashboardDispatcher
   putDashboardByID: DashboardsActions.PutDashboardByIDDispatcher
-  getDashboardsAsync: DashboardsActions.GetDashboardsDispatcher
   getDashboardWithHydratedAndSyncedTempVarsAsync: DashboardsActions.GetDashboardWithHydratedAndSyncedTempVarsAsyncDispatcher
   setTimeRange: DashboardsActions.SetTimeRangeActionCreator
   addDashboardCellAsync: DashboardsActions.AddDashboardCellDispatcher
@@ -115,6 +115,7 @@ interface State {
   selectedCell: DashboardsModels.Cell | null
   scrollTop: number
   windowHeight: number
+  dashboardLinks: DashboardLinks
 }
 
 @ErrorHandling
@@ -129,6 +130,7 @@ class DashboardPage extends Component<Props, State> {
       selectedCell: null,
       scrollTop: 0,
       windowHeight: window.innerHeight,
+      dashboardLinks: DashboardLinks.EMPTY,
     }
   }
 
@@ -138,7 +140,7 @@ class DashboardPage extends Component<Props, State> {
       getAnnotationsAsync,
       timeRange,
       autoRefresh,
-      getDashboardsAsync,
+      dashboard,
     } = this.props
 
     const annotationRange = millisecondTimeRange(timeRange)
@@ -154,10 +156,14 @@ class DashboardPage extends Component<Props, State> {
 
     await this.getDashboard()
 
-    // We populate all dashboards in the redux store so that we can consume
-    // them in `this.dashboardLinks`. See
-    // https://github.com/influxdata/chronograf/issues/3594
-    getDashboardsAsync()
+    const dashboardLinks = await DashboardLinks.load(
+      DashboardLinks.DASHBOARDS_AJAX,
+      source
+    )
+
+    this.setState({
+      dashboardLinks: dashboardLinks.withActiveDashboard(dashboard),
+    })
   }
 
   public componentWillReceiveProps(nextProps: Props) {
@@ -264,7 +270,7 @@ class DashboardPage extends Component<Props, State> {
       templatesIncludingDashTime = []
     }
 
-    const {isEditMode} = this.state
+    const {isEditMode, dashboardLinks} = this.state
 
     return (
       <div className="page dashboard-page">
@@ -299,8 +305,7 @@ class DashboardPage extends Component<Props, State> {
           onSave={this.handleRenameDashboard}
           onCancel={this.handleCancelEditDashboard}
           onEditDashboard={this.handleEditDashboard}
-          dashboardLinks={this.dashboardLinks}
-          activeDashboardLink={this.activeDashboardLink}
+          dashboardLinks={dashboardLinks}
           activeDashboard={dashboard ? dashboard.name : ''}
           showTemplateControlBar={showTemplateControlBar}
           handleChooseAutoRefresh={handleChooseAutoRefresh}
@@ -503,30 +508,6 @@ class DashboardPage extends Component<Props, State> {
 
     this.setState({scrollTop: target.scrollTop})
   }
-
-  private get dashboardLinks(): DashboardsModels.DashboardSwitcherLink[] {
-    const {dashboards, source} = this.props
-
-    return dashboards.map(d => {
-      return {
-        key: String(d.id),
-        text: d.name,
-        to: `/sources/${source.id}/dashboards/${d.id}`,
-      }
-    })
-  }
-
-  private get activeDashboardLink(): DashboardsModels.DashboardSwitcherLink | null {
-    const {dashboard} = this.props
-
-    if (!dashboard) {
-      return null
-    }
-
-    const {dashboardLinks} = this
-
-    return dashboardLinks.find(link => link.key === String(dashboard.id))
-  }
 }
 
 const mstp = (state, {params: {dashboardID}}) => {
@@ -568,7 +549,6 @@ const mstp = (state, {params: {dashboardID}}) => {
     dashboardID: Number(dashboardID),
     timeRange,
     zoomedTimeRange,
-    dashboards,
     autoRefresh,
     isUsingAuth,
     cellQueryStatus,
