@@ -4,8 +4,8 @@ import {
 } from 'src/dashboards/utils/dashboardNameLinks'
 import {dashboard, source} from 'test/resources'
 
-describe('dashboards.utils.DashboardLinks', () => {
-  describe('.load', () => {
+describe('dashboards.utils.dashboardNameLinks', () => {
+  describe('loadDashboardLinks', () => {
     const socure = {...source, id: '897'}
 
     const dashboards = [
@@ -74,7 +74,7 @@ describe('dashboards.utils.DashboardLinks', () => {
 
   const links = [link1, activeLink, link2]
 
-  describe('#withActiveDashboard', () => {
+  describe('updateActiveDashboardLink', () => {
     it('can set the active link', () => {
       const loadedLinks = {links, active: null}
       const actualLinks = updateActiveDashboardLink(

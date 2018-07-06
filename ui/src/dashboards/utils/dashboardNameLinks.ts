@@ -1,12 +1,6 @@
-import {getDashboards} from 'src/dashboards/apis'
-
-import {AxiosResponse} from 'axios'
-import {DashboardsResponse} from 'src/types/apis/dashboards'
+import {GetDashboards} from 'src/types/apis/dashboards'
 import {Source} from 'src/types/sources'
 import {Dashboard, DashboardNameLinks} from 'src/types/dashboards'
-
-type DashboardsRequest = () => Promise<AxiosResponse<DashboardsResponse>>
-export const dashboardsAjax = getDashboards as DashboardsRequest
 
 export const EMPTY_LINKS = {
   links: [],
@@ -14,7 +8,7 @@ export const EMPTY_LINKS = {
 }
 
 export const loadDashboardLinks = async (
-  dashboardsAJAX: DashboardsRequest,
+  dashboardsAJAX: GetDashboards,
   source: Source
 ): Promise<DashboardNameLinks> => {
   const {

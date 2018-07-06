@@ -54,11 +54,9 @@ import {defaultTimeRange} from 'src/shared/data/timeRanges'
 import {Dispatch} from 'redux'
 import {InjectedRouter} from 'react-router'
 import {Location} from 'history'
-import {AxiosResponse} from 'axios'
 import {LocationAction} from 'react-router-redux'
 import * as AuthReducers from 'src/types/reducers/auth'
 import * as DashboardsActions from 'src/types/actions/dashboards'
-import * as DashboardsApis from 'src/types/apis/dashboards'
 import * as DashboardsModels from 'src/types/dashboards'
 import * as DashboardsReducers from 'src/types/reducers/dashboards'
 import * as ErrorsActions from 'src/types/actions/errors'
@@ -269,9 +267,7 @@ export const getDashboardsAsync: DashboardsActions.GetDashboardsDispatcher = ():
   try {
     const {
       data: {dashboards},
-    } = (await getDashboardsAJAX()) as AxiosResponse<
-      DashboardsApis.DashboardsResponse
-    >
+    } = await getDashboardsAJAX()
     dispatch(loadDashboards(dashboards))
     return dashboards
   } catch (error) {
@@ -513,9 +509,8 @@ export const importDashboardAsync = (
 
     const {
       data: {dashboards},
-    } = (await getDashboardsAJAX()) as AxiosResponse<
-      DashboardsApis.DashboardsResponse
-    >
+    } = await getDashboardsAJAX()
+
     dispatch(loadDashboards(dashboards))
 
     dispatch(notify(notifyDashboardImported(name)))
