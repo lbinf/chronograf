@@ -135,3 +135,8 @@ export interface DashboardSwitcherLink {
   to: string
   isActive?: boolean
 }
+
+export interface DashboardNameLinks {
+  active?: DashboardSwitcherLink
+  links: DashboardSwitcherLink[]
+}

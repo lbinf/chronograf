@@ -25,7 +25,7 @@ import idNormalizer, {TYPE_ID} from 'src/normalizers/id'
 import {millisecondTimeRange} from 'src/dashboards/utils/time'
 import {stripTempVar} from 'src/dashboards/utils/tempVars'
 import {getDeep} from 'src/utils/wrappers'
-import DashboardLinks from 'src/dashboards/utils/DashboardLinks'
+import * as dashboardNames from 'src/dashboards/utils/DashboardLinks'
 
 // Constants
 import {
@@ -115,7 +115,7 @@ interface State {
   selectedCell: DashboardsModels.Cell | null
   scrollTop: number
   windowHeight: number
-  dashboardLinks: DashboardLinks
+  dashboardLinks: DashboardsModels.DashboardNameLinks
 }
 
 @ErrorHandling
@@ -130,7 +130,7 @@ class DashboardPage extends Component<Props, State> {
       selectedCell: null,
       scrollTop: 0,
       windowHeight: window.innerHeight,
-      dashboardLinks: DashboardLinks.EMPTY,
+      dashboardLinks: dashboardNames.EMPTY_LINKS,
     }
   }
 
@@ -156,13 +156,16 @@ class DashboardPage extends Component<Props, State> {
 
     await this.getDashboard()
 
-    const dashboardLinks = await DashboardLinks.load(
-      DashboardLinks.DASHBOARDS_AJAX,
+    const dashboardLinks = await dashboardNames.loadDashboardLinks(
+      dashboardNames.dashboardsAjax,
       source
     )
 
     this.setState({
-      dashboardLinks: dashboardLinks.withActiveDashboard(dashboard),
+      dashboardLinks: dashboardNames.updateActiveDashboardLink(
+        dashboardLinks,
+        dashboard
+      ),
     })
   }
 

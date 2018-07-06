@@ -1,4 +1,8 @@
-import DashboardLinks from 'src/dashboards/utils/dashboardLinks'
+import {
+  loadDashboardLinks,
+  updateActiveDashboardLink,
+  getLinksWithActiveStatus,
+} from 'src/dashboards/utils/dashboardLinks'
 import {dashboard, source} from 'test/resources'
 
 describe('dashboards.utils.DashboardLinks', () => {
@@ -28,21 +32,20 @@ describe('dashboards.utils.DashboardLinks', () => {
     const getDashboards = async () => axiosResponse
 
     it('can load dashboard links for source', async () => {
-      const actualLinks = await DashboardLinks.load(getDashboards, socure)
+      const actualLinks = await loadDashboardLinks(getDashboards, socure)
 
-      const expectedLinks = new DashboardLinks(
-        [
+      const expectedLinks = {
+        links: [
           {
             key: '123',
             text: 'Test Dashboard',
             to: '/sources/897/dashboards/123',
           },
         ],
-        null
-      )
+        active: null,
+      }
 
       expect(actualLinks).toEqual(expectedLinks)
-      expect(actualLinks.count).toBe(1)
     })
   })
 
@@ -74,25 +77,28 @@ describe('dashboards.utils.DashboardLinks', () => {
 
   describe('#withActiveDashboard', () => {
     it('can set the active link', () => {
-      const loadedLinks = new DashboardLinks(links, null)
-      const actualLinks = loadedLinks.withActiveDashboard(activeDashboard)
-      const expectedLinks = new DashboardLinks(links, activeLink)
+      const loadedLinks = {links, active: null}
+      const actualLinks = updateActiveDashboardLink(
+        loadedLinks,
+        activeDashboard
+      )
+      const expectedLinks = {links, active: activeLink}
 
       expect(actualLinks).toEqual(expectedLinks)
     })
 
     it('can handle a missing dashboard', () => {
-      const loadedLinks = new DashboardLinks(links, activeLink)
-      const actualLinks = loadedLinks.withActiveDashboard(undefined)
-      const expectedLinks = new DashboardLinks(links, null)
+      const loadedLinks = {links, active: null}
+      const actualLinks = updateActiveDashboardLink(loadedLinks, undefined)
+      const expectedLinks = {links, active: null}
 
       expect(actualLinks).toEqual(expectedLinks)
     })
   })
 
   it('can convert to an array with active status', () => {
-    const loadedLinks = new DashboardLinks(links, activeLink)
-    const actualArray = loadedLinks.toArray()
+    const loadedLinks = {links, active: activeLink}
+    const actualArray = getLinksWithActiveStatus(loadedLinks)
 
     const expectedArray = [
       {
