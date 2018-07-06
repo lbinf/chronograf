@@ -1,3 +1,5 @@
+import {getDashboards} from 'src/dashboards/apis'
+
 import {GetDashboards} from 'src/types/apis/dashboards'
 import {Source} from 'src/types/sources'
 import {Dashboard, DashboardNameLinks} from 'src/types/dashboards'
@@ -8,8 +10,8 @@ export const EMPTY_LINKS = {
 }
 
 export const loadDashboardLinks = async (
-  dashboardsAJAX: GetDashboards,
-  source: Source
+  source: Source,
+  dashboardsAJAX: GetDashboards = getDashboards
 ): Promise<DashboardNameLinks> => {
   const {
     data: {dashboards},

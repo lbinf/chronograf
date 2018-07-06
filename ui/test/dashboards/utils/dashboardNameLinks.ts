@@ -31,7 +31,7 @@ describe('dashboards.utils.dashboardNameLinks', () => {
     const getDashboards = async () => axiosResponse
 
     it('can load dashboard links for source', async () => {
-      const actualLinks = await loadDashboardLinks(getDashboards, socure)
+      const actualLinks = await loadDashboardLinks(socure, getDashboards)
 
       const expectedLinks = {
         links: [
@@ -48,33 +48,32 @@ describe('dashboards.utils.dashboardNameLinks', () => {
     })
   })
 
-  const activeDashboard = {
-    ...dashboard,
-    id: 123,
-    name: 'Test Dashboard',
-  }
-
-  const activeLink = {
-    key: '123',
-    text: 'Test Dashboard',
-    to: '/sources/897/dashboards/123',
-  }
-
-  const link1 = {
-    key: '9001',
-    text: 'Low Dash',
-    to: '/sources/897/dashboards/9001',
-  }
-
-  const link2 = {
-    key: '2282',
-    text: 'Low Dash',
-    to: '/sources/897/dashboards/2282',
-  }
-
-  const links = [link1, activeLink, link2]
-
   describe('updateActiveDashboardLink', () => {
+    const activeDashboard = {
+      ...dashboard,
+      id: 123,
+      name: 'Test Dashboard',
+    }
+
+    const activeLink = {
+      key: '123',
+      text: 'Test Dashboard',
+      to: '/sources/897/dashboards/123',
+    }
+
+    const link1 = {
+      key: '9001',
+      text: 'Low Dash',
+      to: '/sources/897/dashboards/9001',
+    }
+
+    const link2 = {
+      key: '2282',
+      text: 'Low Dash',
+      to: '/sources/897/dashboards/2282',
+    }
+
+    const links = [link1, activeLink, link2]
     it('can set the active link', () => {
       const loadedLinks = {links, active: null}
       const actualLinks = updateActiveDashboardLink(

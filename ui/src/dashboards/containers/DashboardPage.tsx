@@ -27,9 +27,6 @@ import {stripTempVar} from 'src/dashboards/utils/tempVars'
 import {getDeep} from 'src/utils/wrappers'
 import * as dashboardNames from 'src/dashboards/utils/dashboardNameLinks'
 
-// APIs
-import {getDashboards} from 'src/dashboards/apis'
-
 // Constants
 import {
   interval,
@@ -159,10 +156,7 @@ class DashboardPage extends Component<Props, State> {
 
     await this.getDashboard()
 
-    const dashboardLinks = await dashboardNames.loadDashboardLinks(
-      getDashboards,
-      source
-    )
+    const dashboardLinks = await dashboardNames.loadDashboardLinks(source)
 
     this.setState({
       dashboardLinks: dashboardNames.updateActiveDashboardLink(
