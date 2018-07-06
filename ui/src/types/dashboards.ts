@@ -133,7 +133,6 @@ export interface DashboardSwitcherLink {
   key: string
   text: string
   to: string
-  isActive?: boolean
 }
 
 export interface DashboardNameLinks {

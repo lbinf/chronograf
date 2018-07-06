@@ -9,7 +9,6 @@ import FancyScrollbar from 'src/shared/components/FancyScrollbar'
 import {ErrorHandling} from 'src/shared/decorators/errors'
 
 import {DROPDOWN_MENU_MAX_HEIGHT} from 'src/shared/constants/index'
-import {getLinksWithActiveStatus} from 'src/dashboards/utils/DashboardLinks'
 import {DashboardNameLinks, DashboardSwitcherLink} from 'src/types/dashboards'
 
 interface Props {
@@ -66,11 +65,13 @@ class DashboardSwitcher extends PureComponent<Props, State> {
   }
 
   private get links(): JSX.Element[] {
-    return _.sortBy(this.dashboardNameLinks, ['text', 'key']).map(link => {
+    return _.sortBy(this.dashLinks, ['text', 'key']).map(link => {
       return (
         <li
           key={link.key}
-          className={classnames('dropdown-item', {active: link.isActive})}
+          className={classnames('dropdown-item', {
+            active: link === this.activeLink,
+          })}
         >
           <Link to={link.to} onClick={this.handleCloseMenu}>
             {link.text}
@@ -80,8 +81,12 @@ class DashboardSwitcher extends PureComponent<Props, State> {
     })
   }
 
-  private get dashboardNameLinks(): DashboardSwitcherLink[] {
-    return getLinksWithActiveStatus(this.props.dashboardLinks)
+  private get activeLink(): DashboardSwitcherLink {
+    return this.props.dashboardLinks.active
+  }
+
+  private get dashLinks(): DashboardSwitcherLink[] {
+    return this.props.dashboardLinks.links
   }
 }
 

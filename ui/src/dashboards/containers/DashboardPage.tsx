@@ -25,7 +25,7 @@ import idNormalizer, {TYPE_ID} from 'src/normalizers/id'
 import {millisecondTimeRange} from 'src/dashboards/utils/time'
 import {stripTempVar} from 'src/dashboards/utils/tempVars'
 import {getDeep} from 'src/utils/wrappers'
-import * as dashboardNames from 'src/dashboards/utils/DashboardLinks'
+import * as dashboardNames from 'src/dashboards/utils/dashboardNameLinks'
 
 // Constants
 import {

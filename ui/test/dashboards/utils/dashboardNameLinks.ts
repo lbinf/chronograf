@@ -1,8 +1,7 @@
 import {
   loadDashboardLinks,
   updateActiveDashboardLink,
-  getLinksWithActiveStatus,
-} from 'src/dashboards/utils/dashboardLinks'
+} from 'src/dashboards/utils/dashboardNameLinks'
 import {dashboard, source} from 'test/resources'
 
 describe('dashboards.utils.DashboardLinks', () => {
@@ -94,27 +93,5 @@ describe('dashboards.utils.DashboardLinks', () => {
 
       expect(actualLinks).toEqual(expectedLinks)
     })
-  })
-
-  it('can convert to an array with active status', () => {
-    const loadedLinks = {links, active: activeLink}
-    const actualArray = getLinksWithActiveStatus(loadedLinks)
-
-    const expectedArray = [
-      {
-        ...link1,
-        isActive: false,
-      },
-      {
-        ...activeLink,
-        isActive: true,
-      },
-      {
-        ...link2,
-        isActive: false,
-      },
-    ]
-
-    expect(actualArray).toEqual(expectedArray)
   })
 })

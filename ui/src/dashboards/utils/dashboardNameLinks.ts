@@ -3,11 +3,7 @@ import {getDashboards} from 'src/dashboards/apis'
 import {AxiosResponse} from 'axios'
 import {DashboardsResponse} from 'src/types/apis/dashboards'
 import {Source} from 'src/types/sources'
-import {
-  Dashboard,
-  DashboardSwitcherLink,
-  DashboardNameLinks,
-} from 'src/types/dashboards'
+import {Dashboard, DashboardNameLinks} from 'src/types/dashboards'
 
 type DashboardsRequest = () => Promise<AxiosResponse<DashboardsResponse>>
 export const dashboardsAjax = getDashboards as DashboardsRequest
@@ -56,13 +52,4 @@ export const updateActiveDashboardLink = (
   )
 
   return {...dashboardLinks, active}
-}
-
-export const getLinksWithActiveStatus = (
-  dashboardLinks: DashboardNameLinks
-): DashboardSwitcherLink[] => {
-  return dashboardLinks.links.map(link => ({
-    ...link,
-    isActive: link === dashboardLinks.active,
-  }))
 }
